@@ -6,7 +6,7 @@ import 'package:projeto_sentir/utils/prefs.dart';
 
 class PacienteService {
   static Future<List<Paciente>> getPacientes() async {
-    var url = "http://192.168.0.107/projetoapi/diario/listapacientes";
+    var url = "http://lpmweb.com.br/projetosentir/projetoapi/diario/listapacientes";
 
     final token = await Prefs.getString("token");
     print("Token > $token");

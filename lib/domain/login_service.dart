@@ -7,7 +7,7 @@ import 'package:projeto_sentir/utils/prefs.dart';
 
 class LoginService {
   static Future<Usuario> login(String login, String senha) async {
-    var url = "http://192.168.0.107/projetoapi/sistema/login";
+    var url = "http://lpmweb.com.br/projetosentir/sistema/login";
 
     final response =
          await http.post(url, body: {"login": login, "senha": senha});
