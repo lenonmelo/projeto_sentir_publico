@@ -6,13 +6,13 @@ import 'package:projeto_sentir/utils/prefs.dart';
 
 class PacienteService {
   static Future<List<Paciente>> getPacientes() async {
-    var url = "http://lpmweb.com.br/projetosentir/projetoapi/diario/listapacientes";
+    var url = "http://192.168.0.107/projetoapi/diario/listapacientes";
 
     final token = await Prefs.getString("token");
-    print("Token > $token");
+//    print("Tokenaaaaa > $token");
 
     final login = await Prefs.getString("login");
-    print("Login > $login");
+//    print("Login > $login");
 
     final response = await http.post(url, body: {
       "email": login,
@@ -21,13 +21,13 @@ class PacienteService {
     });
 
     final s = response.body;
-    print(s);
+    print("paciente > $s");
 
     final mapPacientes = json.decode(s).cast<Map<String, dynamic>>();
 
-    final carros = mapPacientes.map<Paciente>((json) => Paciente.fromJson(json)).toList();
-
-    return carros;
+    final paciente = mapPacientes.map<Paciente>((json) => Paciente.fromJson(json)).toList();
+    print("pacienteaaaa > $paciente");
+    return paciente;
   }
 
 //  static getPacientes() {

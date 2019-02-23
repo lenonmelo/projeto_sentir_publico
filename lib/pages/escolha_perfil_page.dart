@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
+import 'package:projeto_sentir/pages/cadastro_paciente_page.dart';
 import 'package:projeto_sentir/pages/cadastro_page.dart';
 import 'package:projeto_sentir/pages/cadastro_psicologa_page.dart';
 import 'package:projeto_sentir/utils/nav.dart';
@@ -79,8 +80,8 @@ class EscolhaPerfilPage extends StatelessWidget {
   }
 
   void _onClickPaciente(BuildContext context) {
-    print("Paciente");
+//    print("Paciente");
 
-    push(context,CadastroPage());
+    push(context, CadastroPacientePage());
   }
 }

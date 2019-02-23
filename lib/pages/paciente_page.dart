@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
-import 'package:projeto_sentir/domain/paciente.dart';
-import 'package:projeto_sentir/domain/paciente_service.dart';
-import 'package:projeto_sentir/drawer_list_psicologa.dart';
+import 'package:projeto_sentir/domain/diario.dart';
+import 'package:projeto_sentir/domain/diario_service.dart';
+import 'package:projeto_sentir/drawer_list_paciente.dart';
 import 'package:projeto_sentir/pages/login_page.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 
-class PsicologaPage extends StatelessWidget {
+class PacientePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro"),
+        title: Text("Diário"),
         backgroundColor: Colors.grey,
         centerTitle: false,
         actions: <Widget>[
@@ -27,6 +27,7 @@ class PsicologaPage extends StatelessWidget {
       drawer: DrawerMenu(context),
     );
   }
+
 
   _body2(BuildContext context) {
     return Container(
@@ -49,10 +50,10 @@ class PsicologaPage extends StatelessWidget {
   }
 
   _listView() {
-    final pacientes = PacienteService.getPacientes();
-
+    final diario = DiarioService.getDiarios();
+    final star_colosrs = Colors.blue;
     return FutureBuilder(
-      future: pacientes,
+      future: diario,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final lista = snapshot.data;
@@ -60,27 +61,27 @@ class PsicologaPage extends StatelessWidget {
           return ListView.builder(
             itemCount: lista.length,
             itemBuilder: (context, idx) {
-              final Paciente paciente = lista[idx];
-              final foto = paciente.foto.isEmpty ? "identity_icon.png" : paciente.foto;
+              final Diario diario = lista[idx];
+
               return ListTile(
                 title: Text(
-                  paciente.nome,
+                  diario.data,
                   style: TextStyle(
                     color: Colors.black,
                   ),
                 ),
                 subtitle: Text(
-                  paciente.mesentindo,
+                  diario.mesentindo,
                 ),
-//                leading:
-                leading: Image.network(
-                  "http://192.168.0.107/projetoapi/fotos/$foto",
-                  width: 70,
-                  height: 70,
+                leading: Icon(
+                  Icons.star,
+                  color: star_colosrs,
+                  size: 60,
                 ),
-//                Icon(
-//                  Icons.perm_identity,
-//                ),
+                trailing: Text(
+                    diario.situacao
+                ),
+
 
               );
             },
@@ -95,34 +96,14 @@ class PsicologaPage extends StatelessWidget {
       },
     );
 
-//    return ListView.builder(
-//      itemCount: pacientes.length,
-//      itemBuilder: (context, idx) {
-//        final paciente = pacientes[idx];
-//
-//        return ListTile(
-//          title: Text(
-//            paciente.nome,
-//            style: TextStyle(
-//              color: Colors.black,
-//            ),
-//          ),
-//          subtitle: Text(
-//            paciente.desc,
-//          ),
-//          leading: Icon(
-//            Icons.perm_identity,
-//          ),
-//          trailing: Icon(
-//            Icons.star,
-//            color: Colors.yellow,
-//          ),
-//        );
-//      },
-//    );
+
   }
 
   void _onClickSair(BuildContext context) {
     push(context,LoginPage());
   }
+
+//  abrirDiario(Paciente paciente) {
+//    print(paciente.id);
+//  }
 }

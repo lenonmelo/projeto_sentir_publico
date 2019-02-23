@@ -14,13 +14,13 @@ class CadastroPsicologaService {
          await http.post(url, body: {"nome": nome, "email": login, "senha": senha, "perfil":"ps"});
 
     final s = response.body;
-    print(s);
+//    print(s);
 
     final map = json.decode(s);
 
     final p = Psicologa.fromJson(map);
 
-    print("> $p");
+//    print("> $p");
 
     Prefs.setString("codigo", p.codigo);
     Prefs.setString("token", p.token);

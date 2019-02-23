@@ -100,15 +100,15 @@ class CadastroPage extends StatelessWidget {
               final Paciente paciente = lista[idx];
 
               return ListTile(
-                title: Text(
-                  paciente.nome,
-                  style: TextStyle(
-                    color: Colors.black,
-                  ),
-                ),
-                subtitle: Text(
-                  paciente.email,
-                ),
+//                title: Text(
+//                  paciente.nome,
+//                  style: TextStyle(
+//                    color: Colors.black,
+//                  ),
+//                ),
+//                subtitle: Text(
+//                  paciente.email,
+//                ),
                 leading: Icon(
                   Icons.perm_identity,
                 ),

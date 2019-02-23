@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
+import 'package:projeto_sentir/domain/cadastro_paciente_service.dart';
 import 'package:projeto_sentir/domain/cadastro_psicologa_service.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
 import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
+import 'package:projeto_sentir/pages/paciente_page.dart';
 import 'package:projeto_sentir/pages/psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 import 'package:projeto_sentir/utils/prefs.dart';
 
-class CadastroPsicologaPage extends StatelessWidget {
+class CadastroPacientePage extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -16,13 +18,14 @@ class CadastroPsicologaPage extends StatelessWidget {
   final _tLogin = TextEditingController();
   final _tSenha = TextEditingController();
   final _tSenhaRepetir = TextEditingController();
+  final _tCodigoPsicologa = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Psicologa"),
+        title: Text("Cadastro de Paciente"),
         centerTitle: false,
       ),
       body: _body(context),
@@ -41,6 +44,12 @@ class CadastroPsicologaPage extends StatelessWidget {
     return null;
   }
 
+  String _validateCodigoPsicologa(String text) {
+    if(text.isEmpty) {
+      return "Informe o código da psicóloga(o)";
+    }
+    return null;
+  }
   String _validateSenha(String text) {
     if(text.isEmpty) {
       return "Informe a senha";
@@ -66,7 +75,7 @@ class CadastroPsicologaPage extends StatelessWidget {
         color: Cores.azul,
         child: ListView(
           children: <Widget>[
-            Image.asset("assets/images/logo.png"),
+            Image.asset("assets/images/logo_300px.png"),
             Center(
               child: Text(
                 "Nome",
@@ -81,8 +90,6 @@ class CadastroPsicologaPage extends StatelessWidget {
               validator: _validateNome,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-//                labelText: "Login",
-//                labelStyle: TextStyle(fontSize: 30),
                   filled: true,
                   fillColor: Colors.white),
             ),
@@ -102,6 +109,28 @@ class CadastroPsicologaPage extends StatelessWidget {
               controller: _tLogin,
               validator: _validateLogin,
               keyboardType: TextInputType.emailAddress,
+              decoration: InputDecoration(
+//                labelText: "Login",
+//                labelStyle: TextStyle(fontSize: 30),
+                  filled: true,
+                  fillColor: Colors.white),
+            ),
+            SizedBox(
+              height: 6,
+            ),
+            Center(
+              child: Text(
+                "Código da psicóloga(o)",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            TextFormField(
+              controller: _tCodigoPsicologa,
+              validator: _validateCodigoPsicologa,
+              obscureText: true,
               decoration: InputDecoration(
 //                labelText: "Login",
 //                labelStyle: TextStyle(fontSize: 30),
@@ -155,6 +184,8 @@ class CadastroPsicologaPage extends StatelessWidget {
             SizedBox(
               height: 6,
             ),
+
+
             Container(
               width: 150,
               child: RaisedButton(
@@ -175,19 +206,20 @@ class CadastroPsicologaPage extends StatelessWidget {
   }
 
   void _onClickCadastrar(BuildContext context) async {
+
     if(! _formKey.currentState.validate()) {
       return;
     }
     final nome = _tNome.text;
     final login = _tLogin.text;
     final senha = _tSenha.text;
+    final codigoPsicologa = _tCodigoPsicologa.text;
 
-    final psicologa = await CadastroPsicologaService.cadastro(nome, login, senha);
-    if(psicologa.error.isEmpty || psicologa.error == null)
-      push(context,PsicologaPage());
+    final paciente = await CadastroPacienteService.cadastro(nome, login, senha, codigoPsicologa);
+    if(paciente.error.isEmpty || paciente.error == null)
+      push(context,PacientePage());
     else
-      alert(context, "Aviso", psicologa.error);
-
+      alert(context, "Aviso", paciente.error);
 
   }
 

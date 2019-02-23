@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_sentir/pages/psicologa_page.dart';
-import 'package:projeto_sentir/utils/nav.dart';
 import 'package:projeto_sentir/utils/prefs.dart';
 
 class DrawerMenu extends StatelessWidget {
@@ -27,7 +25,7 @@ class DrawerMenu extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.directions_car),
           title: Text("Diário das emoções"),
-          onTap: () => push(context, PsicologaPage()),
+          onTap: () => print("1"),
         ),
 
         Divider(),
@@ -46,27 +44,16 @@ class DrawerMenu extends StatelessWidget {
         },
       ),
       accountEmail: FutureBuilder(
-        future: Prefs.getString("codigo"),
+        future: Prefs.getString("psicologa"),
         builder: (context, snapshot) {
-          return Text(snapshot.hasData ? snapshot.data : "");
+          final _data = snapshot.data;
+          return Text(snapshot.hasData ? "Psic. $_data" : "");
         },
       ),
       currentAccountPicture: CircleAvatar(
-        child:
-          FutureBuilder(
-            future: Prefs.getString("foto"),
-            builder: (context, snapshot) {
-
-              final foto = snapshot.hasData;
-              return Image.network("http://192.168.0.107/projetoapi/fotos/$foto",
-                  height: 200,
-                  width: 200);
-            },
-          ),
-
+        child: Image.network("https://www.clubdocondominio.com.br/images/default-avatar-ginger-guy.png"),
         backgroundColor: Colors.white,
       ),
-
       onDetailsPressed: verDetalhe,
     );
     return drawerHeader;

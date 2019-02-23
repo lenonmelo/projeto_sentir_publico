@@ -3,6 +3,7 @@ import 'package:projeto_sentir/Cores.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
 import 'package:projeto_sentir/pages/cadastro_page.dart';
 import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
+import 'package:projeto_sentir/pages/paciente_page.dart';
 import 'package:projeto_sentir/pages/psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
@@ -10,8 +11,10 @@ import 'package:projeto_sentir/utils/nav.dart';
 
 class LoginPage extends StatelessWidget {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  final _tLogin = TextEditingController(text: "teste@teste.com.br");
+  //Paciente
+//  final _tLogin = TextEditingController(text: "lenonmelo@gmail.com");
+  //Psicologa
+  final _tLogin = TextEditingController(text: "teste3@teste.com.br");
   final _tSenha = TextEditingController(text: "123456");
 
   @override
@@ -172,7 +175,7 @@ class LoginPage extends StatelessWidget {
       if (usuario.perfil == "ps")
         push(context, PsicologaPage());
       else if (usuario.perfil == "pa")
-        print("paciente");
+        push(context, PacientePage());
     } else{
       alert(context, "Aviso", usuario.error);
     }
