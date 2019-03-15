@@ -12,7 +12,7 @@ class Diario {
   Diario.fromJson(Map<String,dynamic> map) :
         id = int.parse(map["id"]),
         situacao = map["situacao"],
-        mesentindo = map["sentimento"],
+        mesentindo = map["mesentindo"],
         oquefiz = map["oquefiz"],
         error = map["error"],
         data = map["data_criacao"];

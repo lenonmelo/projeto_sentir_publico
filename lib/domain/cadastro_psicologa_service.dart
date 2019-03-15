@@ -8,7 +8,7 @@ import 'package:projeto_sentir/utils/prefs.dart';
 
 class CadastroPsicologaService {
   static Future<Psicologa> cadastro(String nome, String login, String senha) async {
-    var url = "http://192.168.0.107/projetoapi/psicologa/inserir";
+    var url = "http://lpmweb.com.br/projetosentir/psicologa/inserir";
 
     final response =
          await http.post(url, body: {"nome": nome, "email": login, "senha": senha, "perfil":"ps"});
@@ -25,6 +25,30 @@ class CadastroPsicologaService {
     Prefs.setString("codigo", p.codigo);
     Prefs.setString("token", p.token);
     Prefs.setString("login", login);
+    Prefs.setString("perfil", "ps");
+    Prefs.setString("nome", nome);
+
+    return p;
+  }
+
+  static Future<Psicologa> alterar(String nome, String senha) async {
+    var url = "http://lpmweb.com.br/projetosentir/sistema/alterarPerfil";
+    final token = await Prefs.getString("token");
+//    print("Tokenaaaaa > $token");
+
+    final login = await Prefs.getString("login");
+
+    final response = await http.post(url, body: {"nome": nome, "senha": senha, "email":login,"token":token, "perfil":"ps"});
+
+    final s = response.body;
+    print("resposta $s");
+
+    final map = json.decode(s);
+
+    final p = Psicologa.fromJson(map);
+
+//    print("> $p");
+
     Prefs.setString("perfil", "ps");
     Prefs.setString("nome", nome);
 

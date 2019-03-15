@@ -7,17 +7,19 @@ class Usuario {
   final String nome;
   final String foto;
   final String perfil;
+  final String psicologa;
 
-  Usuario(this.id, this.token, this.error, this.codigo, this.nome,this.foto, this.perfil);
+  Usuario(this.id, this.token, this.error, this.codigo, this.nome,this.foto, this.perfil, this.psicologa);
 
   Usuario.fromJson(Map<String,dynamic> map) :
-        id = int.parse(map["result"]),
+        id = int.parse(map["id"]),
         token = map["token"],
         error = map["error"],
         codigo = map["codigo"],
         nome = map["nome"],
         foto = map["foto"],
-        perfil = map["perfil"];
+        perfil = map["perfil"],
+        psicologa = map["psicologa"];
 
   bool isOk() {
     return error == null || error.isEmpty;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
+import 'package:projeto_sentir/domain/login_service.dart';
 import 'package:projeto_sentir/domain/paciente.dart';
 import 'package:projeto_sentir/domain/paciente_service.dart';
 import 'package:projeto_sentir/drawer_list_psicologa.dart';
@@ -74,7 +75,7 @@ class PsicologaPage extends StatelessWidget {
                 ),
 //                leading:
                 leading: Image.network(
-                  "http://192.168.0.107/projetoapi/fotos/$foto",
+                  "http://lpmweb.com.br/projetosentir/fotos/$foto",
                   width: 70,
                   height: 70,
                 ),
@@ -122,7 +123,8 @@ class PsicologaPage extends StatelessWidget {
 //    );
   }
 
-  void _onClickSair(BuildContext context) {
+  void _onClickSair(BuildContext context) async {
+    final usuario = await LoginService.logout();
     push(context,LoginPage());
   }
 }

@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
-import 'package:projeto_sentir/domain/cadastro_paciente_service.dart';
 import 'package:projeto_sentir/domain/cadastro_psicologa_service.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
+import 'package:projeto_sentir/drawer_list_psicologa.dart';
 import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
-import 'package:projeto_sentir/pages/paciente_page.dart';
+import 'package:projeto_sentir/pages/login_page.dart';
 import 'package:projeto_sentir/pages/psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 import 'package:projeto_sentir/utils/prefs.dart';
 
-class CadastroPacientePage extends StatelessWidget {
+class AlteraPsicologaPage extends StatelessWidget {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final _tNome = TextEditingController();
-  final _tLogin = TextEditingController();
   final _tSenha = TextEditingController();
   final _tSenhaRepetir = TextEditingController();
-  final _tCodigoPsicologa = TextEditingController();
 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Paciente"),
+        title: Text("Cadastro de Psicologa"),
         centerTitle: false,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.exit_to_app),
+            onPressed: () {
+              _onClickSair(context);
+            },
+          ),
+        ],
       ),
       body: _body(context),
+
+      drawer: DrawerMenu(context),
     );
   }
   String _validateNome(String text) {
@@ -37,30 +45,11 @@ class CadastroPacientePage extends StatelessWidget {
     }
     return null;
   }
-  String _validateLogin(String text) {
-    if(text.isEmpty) {
-      return "Informe o email";
-    }
-    return null;
-  }
 
-  String _validateCodigoPsicologa(String text) {
-    if(text.isEmpty) {
-      return "Informe o código da psicóloga(o)";
-    }
-    return null;
-  }
-  String _validateSenha(String text) {
-    if(text.isEmpty) {
-      return "Informe a senha";
-    }
-    return null;
-  }
+
+
   String _validateSenhaRepetir(String text) {
 
-    if(text.isEmpty) {
-        return "Repita a senha${_tSenhaRepetir.text}";
-    }
     if(_tSenha.text != text){
       return "Senhas não conferêm";
     }
@@ -75,7 +64,7 @@ class CadastroPacientePage extends StatelessWidget {
         color: Cores.azul,
         child: ListView(
           children: <Widget>[
-            Image.asset("assets/images/logo_300px.png"),
+            Image.asset("assets/images/logo.png"),
             Center(
               child: Text(
                 "Nome",
@@ -88,48 +77,7 @@ class CadastroPacientePage extends StatelessWidget {
             TextFormField(
               controller: _tNome,
               validator: _validateNome,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Center(
-              child: Text(
-                "E-Mail",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            TextFormField(
-              controller: _tLogin,
-              validator: _validateLogin,
-              keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(
-//                labelText: "Login",
-//                labelStyle: TextStyle(fontSize: 30),
-                  filled: true,
-                  fillColor: Colors.white),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Center(
-              child: Text(
-                "Código da psicóloga(o)",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            TextFormField(
-              controller: _tCodigoPsicologa,
-              validator: _validateCodigoPsicologa,
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
 //                labelText: "Login",
 //                labelStyle: TextStyle(fontSize: 30),
@@ -150,9 +98,10 @@ class CadastroPacientePage extends StatelessWidget {
             ),
             TextFormField(
               controller: _tSenha,
-              validator: _validateSenha,
               obscureText: true,
               decoration: InputDecoration(
+//                labelText: "Login",
+//                labelStyle: TextStyle(fontSize: 30),
                   filled: true,
                   fillColor: Colors.white),
             ),
@@ -173,14 +122,36 @@ class CadastroPacientePage extends StatelessWidget {
               validator: _validateSenhaRepetir,
               obscureText: true,
               decoration: InputDecoration(
+//                labelText: "Login",
+//                labelStyle: TextStyle(fontSize: 30),
                   filled: true,
                   fillColor: Colors.white),
             ),
             SizedBox(
               height: 6,
             ),
-
-
+//            Center(
+//              child: Text(
+//                "Foto",
+//                style: TextStyle(
+//                  color: Colors.black,
+//                  fontSize: 20,
+//                ),
+//              ),
+//            ),
+//            TextFormField(
+//              controller: _tSenhaRepetir,
+//              validator: _validateSenhaRepetir,
+//              obscureText: true,
+//              decoration: InputDecoration(
+////                labelText: "Login",
+////                labelStyle: TextStyle(fontSize: 30),
+//                  filled: true,
+//                  fillColor: Colors.white),
+//            ),
+//            SizedBox(
+//              height: 6,
+//            ),
             Container(
               width: 150,
               child: RaisedButton(
@@ -190,7 +161,7 @@ class CadastroPacientePage extends StatelessWidget {
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 onPressed: () {
-                  _onClickCadastrar(context);
+                  _onClickAlterar(context);
                 },
               ),
             ),
@@ -200,21 +171,20 @@ class CadastroPacientePage extends StatelessWidget {
     );
   }
 
-  void _onClickCadastrar(BuildContext context) async {
-
+  void _onClickAlterar(BuildContext context) async {
     if(! _formKey.currentState.validate()) {
       return;
     }
     final nome = _tNome.text;
-    final login = _tLogin.text;
     final senha = _tSenha.text;
-    final codigoPsicologa = _tCodigoPsicologa.text;
+    final psicologa = await CadastroPsicologaService.alterar(nome, senha);
 
-    final paciente = await CadastroPacienteService.cadastro(nome, login, senha, codigoPsicologa);
-    if(paciente.error.isEmpty || paciente.error == null)
-      push(context,PacientePage());
+//    final psicologa = await CadastroPsicologaService.cadastro(nome, login, senha);
+    if(psicologa.sucesso != null)
+      push(context,PsicologaPage());
     else
-      alert(context, "Aviso", paciente.error);
+      alert(context, "Aviso", psicologa.error);
+
 
   }
 
@@ -225,4 +195,8 @@ class CadastroPacientePage extends StatelessWidget {
   void _onClickEsqueceuSenha(BuildContext context) {
     print("Esqueceu a Senha!");
   }
+}
+
+void _onClickSair(BuildContext context) {
+  push(context, LoginPage());
 }

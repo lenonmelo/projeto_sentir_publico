@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:projeto_sentir/pages/altera_paciente_page.dart';
+import 'package:projeto_sentir/pages/paciente_page.dart';
+import 'package:projeto_sentir/utils/nav.dart';
 import 'package:projeto_sentir/utils/prefs.dart';
 
 class DrawerMenu extends StatelessWidget {
@@ -17,7 +20,7 @@ class DrawerMenu extends StatelessWidget {
 
   ListView _getItems(BuildContext context) {
 
-    UserAccountsDrawerHeader drawerHeader = _getHeader();
+    UserAccountsDrawerHeader drawerHeader = _getHeader(context);
 
     final drawerItems = ListView(
       children: <Widget>[
@@ -25,7 +28,7 @@ class DrawerMenu extends StatelessWidget {
         ListTile(
           leading: Icon(Icons.directions_car),
           title: Text("Diário das emoções"),
-          onTap: () => print("1"),
+          onTap: () => push(context, PacientePage()),
         ),
 
         Divider(),
@@ -34,7 +37,7 @@ class DrawerMenu extends StatelessWidget {
     return drawerItems;
   }
 
-  UserAccountsDrawerHeader _getHeader() {
+  UserAccountsDrawerHeader _getHeader(BuildContext context) {
 
     final drawerHeader = UserAccountsDrawerHeader(
       accountName: FutureBuilder(
@@ -50,11 +53,24 @@ class DrawerMenu extends StatelessWidget {
           return Text(snapshot.hasData ? "Psic. $_data" : "");
         },
       ),
-      currentAccountPicture: CircleAvatar(
-        child: Image.network("https://www.clubdocondominio.com.br/images/default-avatar-ginger-guy.png"),
-        backgroundColor: Colors.white,
+      currentAccountPicture:  CircleAvatar(
+        child:
+        FutureBuilder(
+          future: Prefs.getString("foto"),
+          builder: (context, snapshot) {
+            final foto = snapshot.hasData && snapshot.data != "" ? snapshot.data : "perfil_identity_icon.png";
+            print("foto ssss> $foto");
+            return Image.network("http://lpmweb.com.br/projetosentir/fotos/$foto",
+                height: 200,
+                width: 200);
+          },
+        ),
+
+        backgroundColor: Colors.blue,
       ),
-      onDetailsPressed: verDetalhe,
+        onDetailsPressed:() {
+          _verDetalhe(context);
+        },
     );
     return drawerHeader;
   }
@@ -63,7 +79,7 @@ class DrawerMenu extends StatelessWidget {
     Navigator.pop(mainContext);
   }
 
-  void verDetalhe() {
-    print('detalhe');
+  void _verDetalhe(BuildContext context) {
+    push(context, AlteraPacientePage());
   }
 }

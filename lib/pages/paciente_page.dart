@@ -3,7 +3,9 @@ import 'package:projeto_sentir/Cores.dart';
 import 'package:projeto_sentir/domain/diario.dart';
 import 'package:projeto_sentir/domain/diario_service.dart';
 import 'package:projeto_sentir/drawer_list_paciente.dart';
+import 'package:projeto_sentir/pages/cadastro_diario_page.dart';
 import 'package:projeto_sentir/pages/login_page.dart';
+import 'package:projeto_sentir/pages/ver_diario_page.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 
 class PacientePage extends StatelessWidget {
@@ -25,6 +27,12 @@ class PacientePage extends StatelessWidget {
       ),
       body: _body2(context),
       drawer: DrawerMenu(context),
+      floatingActionButton: new FloatingActionButton(
+          onPressed: () {
+            _cadastrodiario(context);
+          } ,
+          child: new Icon(Icons.add)
+      ),
     );
   }
 
@@ -71,18 +79,15 @@ class PacientePage extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                  diario.mesentindo,
-                ),
-                leading: Icon(
-                  Icons.star,
-                  color: star_colosrs,
-                  size: 60,
+                  diario.situacao,
                 ),
                 trailing: Text(
-                    diario.situacao
+                    diario.mesentindo
                 ),
 
-
+              onTap: (){
+                  _mostrarRegistro(context, diario);
+              },
               );
             },
           );
@@ -103,7 +108,12 @@ class PacientePage extends StatelessWidget {
     push(context,LoginPage());
   }
 
-//  abrirDiario(Paciente paciente) {
-//    print(paciente.id);
-//  }
+
+  void _cadastrodiario(BuildContext context) {
+    push(context, CadastroDiarioPage());
+  }
+
+  _mostrarRegistro(BuildContext context, Diario diario) {
+    push(context, VerDiarioPage(diario));
+  }
 }

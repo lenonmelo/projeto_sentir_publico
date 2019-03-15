@@ -2,51 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
 import 'package:projeto_sentir/domain/cadastro_paciente_service.dart';
 import 'package:projeto_sentir/domain/cadastro_psicologa_service.dart';
+import 'package:projeto_sentir/domain/diario.dart';
+import 'package:projeto_sentir/domain/diario_service.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
+import 'package:projeto_sentir/domain/mesentindo.dart';
+import 'package:projeto_sentir/domain/mesentindo_service.dart';
 import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
 import 'package:projeto_sentir/pages/paciente_page.dart';
 import 'package:projeto_sentir/pages/psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 import 'package:projeto_sentir/utils/prefs.dart';
+import 'package:intl/intl.dart';
 
-class CadastroPacientePage extends StatelessWidget {
+class CadastroDiarioPage extends StatelessWidget {
 
+  Diario diario;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final _tNome = TextEditingController();
-  final _tLogin = TextEditingController();
-  final _tSenha = TextEditingController();
-  final _tSenhaRepetir = TextEditingController();
-  final _tCodigoPsicologa = TextEditingController();
-
+  final _tSituacao = TextEditingController();
+  final _tMesenti = TextEditingController();
+  final _tOquefiz = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Paciente"),
+        title: Text("Realizar registro"),
         centerTitle: false,
       ),
       body: _body(context),
     );
   }
-  String _validateNome(String text) {
+  
+  String _validateSituacao(String text) {
     if(text.isEmpty) {
-      return "Informe o nome";
+      return "Informe a situaçao";
     }
     return null;
   }
-  String _validateLogin(String text) {
+  String _validateMesenti(String text) {
     if(text.isEmpty) {
-      return "Informe o email";
+      return "Informe o que sentiu";
     }
     return null;
   }
 
-  String _validateCodigoPsicologa(String text) {
+  String _validateOquefiz(String text) {
     if(text.isEmpty) {
-      return "Informe o código da psicóloga(o)";
+      return "Preencher este campo";
     }
     return null;
   }
@@ -56,29 +60,39 @@ class CadastroPacientePage extends StatelessWidget {
     }
     return null;
   }
-  String _validateSenhaRepetir(String text) {
 
-    if(text.isEmpty) {
-        return "Repita a senha${_tSenhaRepetir.text}";
-    }
-    if(_tSenha.text != text){
-      return "Senhas não conferêm";
-    }
-
-    return null;
-  }
   _body(BuildContext context) {
+    var now = new DateTime.now();
+    String formattedDate = DateFormat('dd/MM/yyyy').format(now);
+
     return Form(
       key: _formKey,
       child: Container(
         padding: EdgeInsets.all(10),
+
         color: Cores.azul,
         child: ListView(
           children: <Widget>[
-            Image.asset("assets/images/logo_300px.png"),
+            Image.asset("assets/images/logo_500px.png",
+                alignment: Alignment(0, -1),
+              height: 120,
+            ),
+
             Center(
               child: Text(
-                "Nome",
+                  "Data: ${formattedDate.toString()}",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 20,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: Text(
+                "Situação:",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -86,28 +100,31 @@ class CadastroPacientePage extends StatelessWidget {
               ),
             ),
             TextFormField(
-              controller: _tNome,
-              validator: _validateNome,
-              keyboardType: TextInputType.emailAddress,
+              controller: _tSituacao,
+              validator: _validateSituacao,
+              keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                   filled: true,
-                  fillColor: Colors.white),
+                  fillColor: Colors.white
+              ),
+              maxLines: 5,
             ),
             SizedBox(
               height: 6,
             ),
             Center(
               child: Text(
-                "E-Mail",
+                "Como me senti:",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
                 ),
               ),
             ),
+//            _dropDownMenuItems(),
             TextFormField(
-              controller: _tLogin,
-              validator: _validateLogin,
+              controller: _tMesenti,
+              validator: _validateMesenti,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
 //                labelText: "Login",
@@ -120,7 +137,7 @@ class CadastroPacientePage extends StatelessWidget {
             ),
             Center(
               child: Text(
-                "Código da psicóloga(o)",
+                "O que eu fiz:",
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 20,
@@ -128,65 +145,24 @@ class CadastroPacientePage extends StatelessWidget {
               ),
             ),
             TextFormField(
-              controller: _tCodigoPsicologa,
-              validator: _validateCodigoPsicologa,
-              decoration: InputDecoration(
-//                labelText: "Login",
-//                labelStyle: TextStyle(fontSize: 30),
-                  filled: true,
-                  fillColor: Colors.white),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Center(
-              child: Text(
-                "Senha",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            TextFormField(
-              controller: _tSenha,
-              validator: _validateSenha,
-              obscureText: true,
+              controller: _tOquefiz,
+              validator: _validateOquefiz,
+              keyboardType: TextInputType.multiline,
               decoration: InputDecoration(
                   filled: true,
                   fillColor: Colors.white),
-            ),
-            SizedBox(
-              height: 6,
-            ),
-            Center(
-              child: Text(
-                "Repita a senha",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-            TextFormField(
-              controller: _tSenhaRepetir,
-              validator: _validateSenhaRepetir,
-              obscureText: true,
-              decoration: InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white),
-            ),
-            SizedBox(
-              height: 6,
+              maxLines: 5
             ),
 
-
+            SizedBox(
+              height: 6,
+            ),
             Container(
               width: 150,
               child: RaisedButton(
                 color: Colors.blue,
                 child: Text(
-                  "Cadastrar",
+                  "Registrar",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 onPressed: () {
@@ -200,21 +176,56 @@ class CadastroPacientePage extends StatelessWidget {
     );
   }
 
+  _dropDownMenuItems() {
+    final sentimentos = MesentindoService.getSentimentos();
+
+    return FutureBuilder(
+      future: sentimentos,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          final lista = snapshot.data;
+          List<DropdownMenuItem<String>> items = new List();
+          for (Mesentindo sentimento in lista) {
+            items.add(new DropdownMenuItem(
+                value: sentimento.id.toString(),
+                child: new Text(sentimento.sentimento)
+            ));
+          }
+
+          return  DropdownButton(
+            value: int.parse("1").toString(),
+            items: items,
+            onChanged: changedDropDownItem,
+          );
+        } else {
+          return SizedBox(
+            width: 50,
+            height: 50,
+            child: CircularProgressIndicator(),
+          );
+        }
+      },
+    );
+
+  }
+  void changedDropDownItem(String selectedCity) {
+    print(selectedCity);
+  }
   void _onClickCadastrar(BuildContext context) async {
 
     if(! _formKey.currentState.validate()) {
       return;
     }
-    final nome = _tNome.text;
-    final login = _tLogin.text;
-    final senha = _tSenha.text;
-    final codigoPsicologa = _tCodigoPsicologa.text;
-
-    final paciente = await CadastroPacienteService.cadastro(nome, login, senha, codigoPsicologa);
-    if(paciente.error.isEmpty || paciente.error == null)
+    final situacao = _tSituacao.text;
+    final mesenti = _tMesenti.text;
+    final oquefiz = _tOquefiz.text;
+//    final codigoPsicologa = _tCodigoPsicologa.text;
+//
+    final diario = await DiarioService.cadastro(situacao, mesenti, oquefiz);
+    if(diario.error.isEmpty || diario.error == null)
       push(context,PacientePage());
     else
-      alert(context, "Aviso", paciente.error);
+      alert(context, "Aviso", diario.error);
 
   }
 
