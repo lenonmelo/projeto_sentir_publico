@@ -10,7 +10,7 @@ Senha:123456
 
 Acessar o "Paciente 2"
 
-Acessar os regisstros do diário do paciente e excluir.
+Acessar os registros do diário do paciente e excluir.
 
 Erro que ocorre
 
