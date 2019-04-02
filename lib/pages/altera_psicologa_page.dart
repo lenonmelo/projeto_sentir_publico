@@ -30,7 +30,6 @@ class _AlteraPsicologaPageState extends State<AlteraPsicologaPage> {
     Future<String> future = Prefs.getString("nome");
     future.then((String nome) {
       _tNome.text = nome;
-
     });
   }
 
@@ -38,7 +37,7 @@ class _AlteraPsicologaPageState extends State<AlteraPsicologaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Paciente"),
+        title: Text("Alterar perfil"),
         centerTitle: false,
         actions: <Widget>[
           IconButton(

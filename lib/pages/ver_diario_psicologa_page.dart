@@ -215,19 +215,19 @@ class _VerdiarioPsicologaPageState extends State<VerDiarioPsicologaPage>
         });
   }
   void excluirdiario(BuildContext context, String id) async {
-     try{
+//     try{
         final diario = await DiarioService.excluir(id);
 
-        if(diario.error.isEmpty || diario.error == null){
+//        if(diario.error.isEmpty || diario.error == null){
 //          print("retorno >> ${diario.nome_paciente}");
 //          pushReplacement(context,DiarioPsicologaPage(diario.id_paciente, diario.nome_paciente));
           pop(context);
-        }
+//        }
 //        else
 //          alert(context, "Aviso", diario.error);
-     } catch(error) {
-       print("erro $error");
-     }
+//     } catch(error) {
+//       print("erro $error");
+//     }
   }
 }
 

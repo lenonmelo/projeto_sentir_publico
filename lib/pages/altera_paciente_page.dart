@@ -3,13 +3,14 @@ import 'package:projeto_sentir/Cores.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
 import 'package:projeto_sentir/domain/paciente_service.dart';
 import 'package:projeto_sentir/domain/usuario.dart';
-import 'package:projeto_sentir/drawer_list_psicologa.dart';
+import 'package:projeto_sentir/drawer_list_paciente.dart';
 
 import 'package:projeto_sentir/pages/login_page.dart';
 import 'package:projeto_sentir/pages/paciente_page.dart';
 
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
+import 'package:projeto_sentir/utils/prefs.dart';
 
 class AlteraPacientePage extends StatefulWidget {
 
@@ -27,10 +28,9 @@ class _AlteraPacientePageState extends State<AlteraPacientePage> {
   @override
   void initState() {
     super.initState();
-
-    Future<Usuario> future = Usuario.get();
-    future.then((Usuario u) {
-      _tNome.text = u.nome;
+    Future<String> future = Prefs.getString("nome");
+    future.then((String nome) {
+      _tNome.text = nome;
     });
   }
 
@@ -38,7 +38,7 @@ class _AlteraPacientePageState extends State<AlteraPacientePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Paciente"),
+        title: Text("Alterar perfil"),
         centerTitle: false,
         actions: <Widget>[
           IconButton(
@@ -151,7 +151,7 @@ class _AlteraPacientePageState extends State<AlteraPacientePage> {
               child: RaisedButton(
                 color: Colors.blue,
                 child: Text(
-                  "Cadastrar",
+                  "Alterar",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 onPressed: () {
