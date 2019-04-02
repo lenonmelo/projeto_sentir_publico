@@ -5,8 +5,11 @@ A new Flutter project.
 ## Getting Started
 
 Perfil psicologa: psicologa2@teste.com.br
+
 Senha:123456
+
 Acessar o "Paciente 2"
+
 Acessar os regisstros do diário do paciente e excluir.
 
 Erro que ocorre
