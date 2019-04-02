@@ -1,29 +1,44 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
-import 'package:projeto_sentir/domain/cadastro_psicologa_service.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
+import 'package:projeto_sentir/domain/psicologa_service.dart';
 import 'package:projeto_sentir/drawer_list_psicologa.dart';
-import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
+
 import 'package:projeto_sentir/pages/login_page.dart';
 import 'package:projeto_sentir/pages/psicologa_page.dart';
+
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 import 'package:projeto_sentir/utils/prefs.dart';
 
-class AlteraPsicologaPage extends StatelessWidget {
+class AlteraPsicologaPage extends StatefulWidget {
 
+  @override
+  _AlteraPsicologaPageState createState() => _AlteraPsicologaPageState();
+}
+
+class _AlteraPsicologaPageState extends State<AlteraPsicologaPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final _tNome = TextEditingController();
   final _tSenha = TextEditingController();
   final _tSenhaRepetir = TextEditingController();
 
+  @override
+  void initState() {
+    super.initState();
+    Future<String> future = Prefs.getString("nome");
+    future.then((String nome) {
+      _tNome.text = nome;
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro de Psicologa"),
+        title: Text("Cadastro de Paciente"),
         centerTitle: false,
         actions: <Widget>[
           IconButton(
@@ -39,14 +54,13 @@ class AlteraPsicologaPage extends StatelessWidget {
       drawer: DrawerMenu(context),
     );
   }
+
   String _validateNome(String text) {
     if(text.isEmpty) {
       return "Informe o nome";
     }
     return null;
   }
-
-
 
   String _validateSenhaRepetir(String text) {
 
@@ -56,6 +70,7 @@ class AlteraPsicologaPage extends StatelessWidget {
 
     return null;
   }
+
   _body(BuildContext context) {
     return Form(
       key: _formKey,
@@ -130,34 +145,13 @@ class AlteraPsicologaPage extends StatelessWidget {
             SizedBox(
               height: 6,
             ),
-//            Center(
-//              child: Text(
-//                "Foto",
-//                style: TextStyle(
-//                  color: Colors.black,
-//                  fontSize: 20,
-//                ),
-//              ),
-//            ),
-//            TextFormField(
-//              controller: _tSenhaRepetir,
-//              validator: _validateSenhaRepetir,
-//              obscureText: true,
-//              decoration: InputDecoration(
-////                labelText: "Login",
-////                labelStyle: TextStyle(fontSize: 30),
-//                  filled: true,
-//                  fillColor: Colors.white),
-//            ),
-//            SizedBox(
-//              height: 6,
-//            ),
+
             Container(
               width: 150,
               child: RaisedButton(
                 color: Colors.blue,
                 child: Text(
-                  "Cadastrar",
+                  "Alterar",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 onPressed: () {
@@ -177,26 +171,20 @@ class AlteraPsicologaPage extends StatelessWidget {
     }
     final nome = _tNome.text;
     final senha = _tSenha.text;
-    final psicologa = await CadastroPsicologaService.alterar(nome, senha);
-
-//    final psicologa = await CadastroPsicologaService.cadastro(nome, login, senha);
-    if(psicologa.sucesso != null)
-      push(context,PsicologaPage());
-    else
-      alert(context, "Aviso", psicologa.error);
-
-
-  }
-
-  void _onClickGoogle(BuildContext context) {
-    print("Google");
-  }
-
-  void _onClickEsqueceuSenha(BuildContext context) {
-    print("Esqueceu a Senha!");
+    try{
+      final psicologa = await PsicologaService.alterar(nome, senha);
+      if(psicologa.sucesso != null) {
+        pop(context);
+        pushReplacement(context, PsicologaPage());
+      }else
+        alert(context, "Aviso", psicologa.error);
+    } catch(error) {
+      alert(context, "Erro","Ocorreu um erro ao alterar a psicologa");
+    }
   }
 }
 
-void _onClickSair(BuildContext context) {
-  push(context, LoginPage());
+Future _onClickSair(BuildContext context) async {
+  final usuario = await LoginService.logout();
+  pushReplacement(context, LoginPage());
 }

@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
-import 'package:projeto_sentir/domain/cadastro_psicologa_service.dart';
-import 'package:projeto_sentir/domain/login_service.dart';
-import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
+import 'package:projeto_sentir/domain/psicologa_service.dart';
 import 'package:projeto_sentir/pages/psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
-import 'package:projeto_sentir/utils/prefs.dart';
 
 class CadastroPsicologaPage extends StatelessWidget {
 
@@ -181,21 +178,16 @@ class CadastroPsicologaPage extends StatelessWidget {
     final nome = _tNome.text;
     final login = _tLogin.text;
     final senha = _tSenha.text;
+    try {
+      final psicologa = await PsicologaService.cadastro(nome, login, senha);
+      if(psicologa.error.isEmpty || psicologa.error == null)
+        push(context,PsicologaPage());
+      else
+        alert(context, "Aviso", psicologa.error);
+    } catch(error) {
+      print(error.toString());
+      alert(context, "Erro","Ocorreu um erro ao cadastrar psicologa.");
+    }
 
-    final psicologa = await CadastroPsicologaService.cadastro(nome, login, senha);
-    if(psicologa.error.isEmpty || psicologa.error == null)
-      push(context,PsicologaPage());
-    else
-      alert(context, "Aviso", psicologa.error);
-
-
-  }
-
-  void _onClickGoogle(BuildContext context) {
-    print("Google");
-  }
-
-  void _onClickEsqueceuSenha(BuildContext context) {
-    print("Esqueceu a Senha!");
   }
 }

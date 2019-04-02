@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:projeto_sentir/utils/prefs.dart';
 
 class Usuario {
   final int id;
@@ -21,8 +24,33 @@ class Usuario {
         perfil = map["perfil"],
         psicologa = map["psicologa"];
 
+  Map toMap() {
+    final map = Map<String,dynamic>();
+    map["id"] = "$id";
+    map["token"]= token;
+    map["codigo"] = codigo;
+    map["nome"] = nome;
+    map["foto"] = foto;
+    map["perfil"] = perfil;
+    map["psicologa"] = psicologa;
+    return map;
+  }
+
   bool isOk() {
     return error == null || error.isEmpty;
+  }
+
+  void save() {
+    final map = toMap();
+    final s = json.encode(map);
+    Prefs.setString("user", s);
+  }
+
+  static Future<Usuario> get() async {
+    String s = await Prefs.getString("user");
+    final map = json.decode(s) as Map<String,dynamic>;
+    final user = Usuario.fromJson(map);
+    return user;
   }
 
   @override

@@ -63,7 +63,4 @@ class DrawerMenu extends StatelessWidget {
     return drawerHeader;
   }
 
-  void _logout() {
-    Navigator.pop(mainContext);
-  }
 }

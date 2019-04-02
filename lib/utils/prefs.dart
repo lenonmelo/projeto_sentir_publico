@@ -52,4 +52,10 @@ class Prefs {
 
     prefs.setString(key, s);
   }
+
+  static void clear() async {
+    var prefs = await SharedPreferences.getInstance();
+
+    prefs.clear();
+  }
 }

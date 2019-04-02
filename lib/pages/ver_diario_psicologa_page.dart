@@ -2,28 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
 import 'package:projeto_sentir/domain/diario.dart';
 import 'package:projeto_sentir/domain/diario_service.dart';
-import 'package:projeto_sentir/pages/paciente_page.dart';
+import 'package:projeto_sentir/pages/diario_psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 
-class VerDiarioPage extends StatefulWidget {
+class VerDiarioPsicologaPage extends StatefulWidget {
 
   Diario diario;
 
-  VerDiarioPage(this.diario);
+  VerDiarioPsicologaPage(this.diario);
   @override
-  _VerdiarioPageState createState() => new _VerdiarioPageState(diario);
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    // TODO: implement build
-//    return null;
-//  }
+  _VerdiarioPsicologaPageState createState() => new _VerdiarioPsicologaPageState(diario);
 }
-class _VerdiarioPageState extends State<VerDiarioPage>
+class _VerdiarioPsicologaPageState extends State<VerDiarioPsicologaPage>
 {
    Diario diario;
-  _VerdiarioPageState(this.diario);
+  _VerdiarioPsicologaPageState(this.diario);
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -36,6 +30,7 @@ class _VerdiarioPageState extends State<VerDiarioPage>
    @override
    void initState() {
      super.initState();
+
      _tSituacao.text = this.diario.situacao;
      _tMesenti.text = this.diario.mesentindo;
      _tOquefiz.text = this.diario.oquefiz;
@@ -75,7 +70,7 @@ class _VerdiarioPageState extends State<VerDiarioPage>
 
 
   _body(BuildContext context) {
-     return Form(
+    return Form(
       key: _formKey,
       child: Container(
         padding: EdgeInsets.all(10),
@@ -110,6 +105,7 @@ class _VerdiarioPageState extends State<VerDiarioPage>
               ),
             ),
             TextFormField(
+              enabled: false,
               controller: _tSituacao,
               validator: _validateSituacao,
               keyboardType: TextInputType.multiline,
@@ -133,6 +129,7 @@ class _VerdiarioPageState extends State<VerDiarioPage>
             ),
 //            _dropDownMenuItems(),
             TextFormField(
+              enabled: false,
               controller: _tMesenti,
               validator: _validateMesenti,
               keyboardType: TextInputType.emailAddress,
@@ -155,6 +152,7 @@ class _VerdiarioPageState extends State<VerDiarioPage>
               ),
             ),
             TextFormField(
+                enabled: false,
               controller: _tOquefiz,
               validator: _validateOquefiz,
               keyboardType: TextInputType.multiline,
@@ -172,11 +170,11 @@ class _VerdiarioPageState extends State<VerDiarioPage>
               child: RaisedButton(
                 color: Colors.blue,
                 child: Text(
-                  "Alterar",
+                  "Remover",
                   style: TextStyle(fontSize: 20, color: Colors.white),
                 ),
                 onPressed: () {
-                  _onClickAlterar(context, diario.id.toString());
+                  _onClickRemover(context, diario.id.toString());
                 },
               ),
             ),
@@ -187,24 +185,49 @@ class _VerdiarioPageState extends State<VerDiarioPage>
   }
 
 
-  void _onClickAlterar(BuildContext context, String id) async {
-
-    if(! _formKey.currentState.validate()) {
-      return;
-    }
-    final situacao = _tSituacao.text;
-    final mesenti = _tMesenti.text;
-    final oquefiz = _tOquefiz.text;
-    try{
-      final diario = await DiarioService.alterar(id, situacao, mesenti, oquefiz);
-      if(diario.error.isEmpty || diario.error == null) {
-        pop(context);
-        pushReplacement(context, PacientePage());
-      }else
-        alert(context, "Aviso", diario.error);
-    } catch(error) {
-      alert(context, "Erro","Ocorreu um erro ao alterar um registro no diário");
-    }
+  void _onClickRemover(BuildContext context, String id) async {
+    confirmRemocao(context, "Excluir", "Deseja excluir esse registro?", id);
   }
+  confirmRemocao(BuildContext context, String title, String msg, String id) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(title),
+            content: Text(msg),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("Sim"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  excluirdiario(context, id);
 
+                },
+              ),
+              FlatButton(
+                child: Text("Não"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              )
+            ],
+          );
+        });
+  }
+  void excluirdiario(BuildContext context, String id) async {
+     try{
+        final diario = await DiarioService.excluir(id);
+
+        if(diario.error.isEmpty || diario.error == null){
+//          print("retorno >> ${diario.nome_paciente}");
+//          pushReplacement(context,DiarioPsicologaPage(diario.id_paciente, diario.nome_paciente));
+          pop(context);
+        }
+//        else
+//          alert(context, "Aviso", diario.error);
+     } catch(error) {
+       print("erro $error");
+     }
+  }
 }
+

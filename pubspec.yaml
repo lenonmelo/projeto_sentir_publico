@@ -51,6 +51,8 @@ flutter:
     - assets/images/logo_300px.png
     - assets/images/logo_200px.png
     - assets/images/diario.png
+    - assets/images/icon_diario_70px.jpg
+    - assets/images/icon_diario_blue_70px.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
 

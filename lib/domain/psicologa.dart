@@ -11,7 +11,7 @@ class Psicologa {
   Psicologa(this.id, this.token, this.error, this.codigo, this.nome, this.sucesso);
 
   Psicologa.fromJson(Map<String,dynamic> map) :
-        id = int.parse(map["result"]),
+        id = int.parse(map["id"]),
         token = map["token"],
         error = map["error"],
         codigo = map["codigo"],

@@ -4,16 +4,29 @@ import 'package:projeto_sentir/domain/login_service.dart';
 import 'package:projeto_sentir/domain/paciente.dart';
 import 'package:projeto_sentir/domain/paciente_service.dart';
 import 'package:projeto_sentir/drawer_list_psicologa.dart';
+import 'package:projeto_sentir/pages/diario_psicologa_page.dart';
 import 'package:projeto_sentir/pages/login_page.dart';
+import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 
-class PsicologaPage extends StatelessWidget {
+class PsicologaPage extends StatefulWidget {
+  @override
+  _PsicologaPageState createState() => _PsicologaPageState();
+}
+
+class _PsicologaPageState extends State<PsicologaPage> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cadastro"),
-        backgroundColor: Colors.grey,
+        title: Text("Pacientes"),
+        backgroundColor: Colors.blue,
         centerTitle: false,
         actions: <Widget>[
           IconButton(
@@ -24,23 +37,18 @@ class PsicologaPage extends StatelessWidget {
           ),
         ],
       ),
-      body: _body2(context),
+      body: _body(context),
       drawer: DrawerMenu(context),
     );
   }
 
-  _body2(BuildContext context) {
+  _body(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(10),
       color: Cores.azul,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Image.asset(
-            "assets/images/diario.png",
-            width: 50,
-            height: 50,
-          ),
           Expanded(
             child: _listView(),
           )
@@ -57,12 +65,10 @@ class PsicologaPage extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           final lista = snapshot.data;
-
           return ListView.builder(
             itemCount: lista.length,
             itemBuilder: (context, idx) {
               final Paciente paciente = lista[idx];
-              final foto = paciente.foto.isEmpty ? "identity_icon.png" : paciente.foto;
               return ListTile(
                 title: Text(
                   paciente.nome,
@@ -73,12 +79,26 @@ class PsicologaPage extends StatelessWidget {
                 subtitle: Text(
                   paciente.mesentindo,
                 ),
-//                leading:
-                leading: Image.network(
-                  "http://lpmweb.com.br/projetosentir/fotos/$foto",
-                  width: 70,
-                  height: 70,
+                trailing: InkWell(
+                  onTap: () {
+                    _onclickAtivarDestivar(context, paciente.id);
+                  },
+                  child: Text(
+                      ( paciente.ativo.toString() == "1" ? "Ativo" : "Desativado"),
+                    style: TextStyle(
+                      color: Colors.black38
+                    ),
+                  ),
                 ),
+
+//                leading:
+                leading: Image.asset(
+                  "assets/images/icon_diario_blue_70px.jpg",
+                  width: 40,
+                ),
+                onTap: (){
+                  _acessarDiario(context, paciente.id, paciente.nome);
+                },
 //                Icon(
 //                  Icons.perm_identity,
 //                ),
@@ -95,36 +115,23 @@ class PsicologaPage extends StatelessWidget {
         }
       },
     );
-
-//    return ListView.builder(
-//      itemCount: pacientes.length,
-//      itemBuilder: (context, idx) {
-//        final paciente = pacientes[idx];
-//
-//        return ListTile(
-//          title: Text(
-//            paciente.nome,
-//            style: TextStyle(
-//              color: Colors.black,
-//            ),
-//          ),
-//          subtitle: Text(
-//            paciente.desc,
-//          ),
-//          leading: Icon(
-//            Icons.perm_identity,
-//          ),
-//          trailing: Icon(
-//            Icons.star,
-//            color: Colors.yellow,
-//          ),
-//        );
-//      },
-//    );
   }
 
   void _onClickSair(BuildContext context) async {
     final usuario = await LoginService.logout();
-    push(context,LoginPage());
+    pushReplacement(context,LoginPage());
+  }
+
+  void _acessarDiario(BuildContext context, int id, String nome) {
+    push(context,DiarioPsicologaPage(id, nome));
+  }
+
+  _onclickAtivarDestivar(BuildContext context, int id) async {
+   try{
+      final paciente = await PacienteService.ativardesativar(id);
+      pushReplacement(context, PsicologaPage());
+    } catch(error) {
+      alert(context, "Erro","Ocorreu um erro ao ativar ou desativar o paciente");
+    }
   }
 }

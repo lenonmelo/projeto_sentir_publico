@@ -9,18 +9,19 @@ import 'package:projeto_sentir/utils/prefs.dart';
 class LoginService {
   static Future<Usuario> login(String login, String senha) async {
     var url = "http://lpmweb.com.br/projetosentir/sistema/login";
-
+    Prefs.clear();
     final response =
     await http.post(url, body: {"login": login, "senha": senha});
 
     final s = response.body;
-    print("> $s");
+    print("\n\n\n### LOGIN #### $s");
 
     final map = json.decode(s);
 
     final u = Usuario.fromJson(map);
 
-//    print("> $u");
+    u.save();
+
     final psicologa = u.psicologa == null ? "" : u.psicologa;
     Prefs.setString("codigo", u.codigo);
     Prefs.setString("token", u.token);
@@ -42,7 +43,7 @@ class LoginService {
     await http.post(url, body: {"email": login, "token": token});
 
     final s = response.body;
-    print("retorno > $s");
+//    print("retorno > $s");
 
     final map = json.decode(s);
 
@@ -50,12 +51,27 @@ class LoginService {
 
 //    print("> $u");
 
-    Prefs.setString("codigo", "");
-    Prefs.setString("token", "");
-    Prefs.setString("login", "");
-    Prefs.setString("foto", "");
-    Prefs.setString("perfil", "");
-    Prefs.setString("nome", "");
+    Prefs.clear();
     return l;
+  }
+
+  static Future<Usuario> esquecisenha(String email) async {
+    var url = "http://lpmweb.com.br/projetosentir/sistema/esquecisenha";
+    Prefs.clear();
+    final response =
+    await http.post(url, body: {"email": email});
+
+    final s = response.body;
+    print("\n\n\n### LOGIN #### $s");
+
+    final map = json.decode(s);
+
+    final u = Usuario.fromJson(map);
+
+    u.save();
+
+
+
+    return u;
   }
 }

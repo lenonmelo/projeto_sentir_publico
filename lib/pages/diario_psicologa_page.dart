@@ -3,40 +3,50 @@ import 'package:projeto_sentir/Cores.dart';
 import 'package:projeto_sentir/domain/diario.dart';
 import 'package:projeto_sentir/domain/diario_service.dart';
 import 'package:projeto_sentir/domain/login_service.dart';
-import 'package:projeto_sentir/drawer_list_paciente.dart';
 import 'package:projeto_sentir/pages/cadastro_diario_page.dart';
 import 'package:projeto_sentir/pages/login_page.dart';
-import 'package:projeto_sentir/pages/ver_diario_page.dart';
+import 'package:projeto_sentir/pages/ver_diario_psicologa_page.dart';
 import 'package:projeto_sentir/utils/nav.dart';
 
-class PacientePage extends StatelessWidget {
+class DiarioPsicologaPage extends StatefulWidget {
+
+  int id_paciente;
+  String nome;
+
+  DiarioPsicologaPage(this.id_paciente, this.nome);
+  @override
+  _DiarioPsicologaState createState() => new _DiarioPsicologaState(id_paciente, nome);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return null;
+  }
+}
+class _DiarioPsicologaState extends State<DiarioPsicologaPage>
+{
+  int id_paciente;
+  String nome;
+  _DiarioPsicologaState(this.id_paciente, this.nome);
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  
+//   String _currentCity;
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Diário"),
-        backgroundColor: Colors.blue,
+        title: Text(this.nome.toString()),
         centerTitle: false,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.exit_to_app),
-            onPressed: () {
-              _onClickSair(context);
-            },
-          ),
-        ],
       ),
       body: _body(context),
-      drawer: DrawerMenu(context),
-      floatingActionButton: new FloatingActionButton(
-          onPressed: () {
-            _cadastrodiario(context);
-          } ,
-          child: new Icon(Icons.add)
-      ),
     );
   }
-
 
   _body(BuildContext context) {
     return Container(
@@ -59,7 +69,8 @@ class PacientePage extends StatelessWidget {
   }
 
   _listView() {
-    final diario = DiarioService.getDiarios();
+
+    final diario = DiarioService.getDiariosPaciente(this.id_paciente);
     return FutureBuilder(
       future: diario,
       builder: (context, snapshot) {
@@ -79,15 +90,15 @@ class PacientePage extends StatelessWidget {
                   ),
                 ),
                 subtitle: Text(
-                    (diario.situacao.length > 40 ) ? diario.situacao.substring(0, 40).toString()+"..." : diario.situacao
+                    (diario.situacao.length > 40 ) ? diario.situacao.substring(0, 40).toString() : diario.situacao
                 ),
                 trailing: Text(
-                    (diario.mesentindo.length > 15 ) ? diario.mesentindo.substring(0, 15).toString()+"..." : diario.mesentindo
+                    (diario.mesentindo.length > 15 ) ? diario.mesentindo.substring(0, 15).toString() : diario.mesentindo
                 ),
 
                 onTap: (){
                   _mostrarRegistro(context, diario);
-              },
+                },
               );
             },
           );
@@ -104,18 +115,7 @@ class PacientePage extends StatelessWidget {
 
   }
 
-  Future _onClickSair(BuildContext context) async {
-    final usuario = await LoginService.logout();
-    pushReplacement(context,LoginPage());
-  }
-
-
-  void _cadastrodiario(BuildContext context) {
-    push(context, CadastroDiarioPage());
-  }
-
   _mostrarRegistro(BuildContext context, Diario diario) {
-    push(context, VerDiarioPage(diario));
+      push(context, VerDiarioPsicologaPage(diario));
   }
 }
-

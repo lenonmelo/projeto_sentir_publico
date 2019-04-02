@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:projeto_sentir/Cores.dart';
-import 'package:projeto_sentir/domain/cadastro_paciente_service.dart';
-import 'package:projeto_sentir/domain/cadastro_psicologa_service.dart';
 import 'package:projeto_sentir/domain/diario.dart';
 import 'package:projeto_sentir/domain/diario_service.dart';
-import 'package:projeto_sentir/domain/login_service.dart';
-import 'package:projeto_sentir/domain/mesentindo.dart';
-import 'package:projeto_sentir/domain/mesentindo_service.dart';
-import 'package:projeto_sentir/pages/escolha_perfil_page.dart';
 import 'package:projeto_sentir/pages/paciente_page.dart';
-import 'package:projeto_sentir/pages/psicologa_page.dart';
 import 'package:projeto_sentir/utils/alerts.dart';
 import 'package:projeto_sentir/utils/nav.dart';
-import 'package:projeto_sentir/utils/prefs.dart';
 import 'package:intl/intl.dart';
 
 class CadastroDiarioPage extends StatelessWidget {
@@ -51,12 +43,6 @@ class CadastroDiarioPage extends StatelessWidget {
   String _validateOquefiz(String text) {
     if(text.isEmpty) {
       return "Preencher este campo";
-    }
-    return null;
-  }
-  String _validateSenha(String text) {
-    if(text.isEmpty) {
-      return "Informe a senha";
     }
     return null;
   }
@@ -176,41 +162,7 @@ class CadastroDiarioPage extends StatelessWidget {
     );
   }
 
-  _dropDownMenuItems() {
-    final sentimentos = MesentindoService.getSentimentos();
 
-    return FutureBuilder(
-      future: sentimentos,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final lista = snapshot.data;
-          List<DropdownMenuItem<String>> items = new List();
-          for (Mesentindo sentimento in lista) {
-            items.add(new DropdownMenuItem(
-                value: sentimento.id.toString(),
-                child: new Text(sentimento.sentimento)
-            ));
-          }
-
-          return  DropdownButton(
-            value: int.parse("1").toString(),
-            items: items,
-            onChanged: changedDropDownItem,
-          );
-        } else {
-          return SizedBox(
-            width: 50,
-            height: 50,
-            child: CircularProgressIndicator(),
-          );
-        }
-      },
-    );
-
-  }
-  void changedDropDownItem(String selectedCity) {
-    print(selectedCity);
-  }
   void _onClickCadastrar(BuildContext context) async {
 
     if(! _formKey.currentState.validate()) {
@@ -219,21 +171,15 @@ class CadastroDiarioPage extends StatelessWidget {
     final situacao = _tSituacao.text;
     final mesenti = _tMesenti.text;
     final oquefiz = _tOquefiz.text;
-//    final codigoPsicologa = _tCodigoPsicologa.text;
-//
-    final diario = await DiarioService.cadastro(situacao, mesenti, oquefiz);
-    if(diario.error.isEmpty || diario.error == null)
-      push(context,PacientePage());
-    else
-      alert(context, "Aviso", diario.error);
-
-  }
-
-  void _onClickGoogle(BuildContext context) {
-    print("Google");
-  }
-
-  void _onClickEsqueceuSenha(BuildContext context) {
-    print("Esqueceu a Senha!");
+    try{
+      final diario = await DiarioService.cadastro(situacao, mesenti, oquefiz);
+      if(diario.error.isEmpty || diario.error == null) {
+        pop(context);
+        pushReplacement(context, PacientePage());
+      }else
+        alert(context, "Aviso", diario.error);
+    } catch(error) {
+      alert(context, "Erro","Ocorreu um erro ao realizar registro no diario");
+    }
   }
 }

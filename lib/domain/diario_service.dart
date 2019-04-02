@@ -10,17 +10,45 @@ class DiarioService {
     var url = "http://lpmweb.com.br/projetosentir/diario/lista";
 
     final token = await Prefs.getString("token");
-    print("Tokenaaaaaaaaa > $token");
+//    print("Tokenaaaaaaaaa > $token");
     final login = await Prefs.getString("login");
-    print("Loginaaaaaa > $login");
-    final response = await http.post(url, body: {
+//    print("Loginaaaaaa > $login");
+    final body = {
       "email": login,
       "token": token,
       "perfil": "pa"
+    };
+
+    print("post body $body");
+
+    final response = await http.post(url,body: body );
+
+    final s = response.body;
+//    print("diarios > $s");
+    final mapDiario = json.decode(s).cast<Map<String, dynamic>>();
+
+    final diario = mapDiario.map<Diario>((json) => Diario.fromJson(json)).toList();
+
+    return diario;
+  }
+
+  static Future<List<Diario>> getDiariosPaciente(int id_paciente) async {
+    var url = "http://lpmweb.com.br/projetosentir/diario/lista";
+
+    final token = await Prefs.getString("token");
+//    print("Tokenaaaaaaaaa > $token");
+    final login = await Prefs.getString("login");
+//    print("Loginaaaaaa > $login");
+//print("id paciente $id_paciente");
+    final response = await http.post(url, body: {
+      "email": login,
+      "token": token,
+      "id_paciente": id_paciente.toString(),
+      "perfil": "ps"
     });
 
     final s = response.body;
-    print("diarios > $s");
+//    print("diariosaaaaa > $s");
     final mapDiario = json.decode(s).cast<Map<String, dynamic>>();
 
     final diario = mapDiario.map<Diario>((json) => Diario.fromJson(json)).toList();
@@ -39,7 +67,7 @@ class DiarioService {
     await http.post(url, body: {"situacao": situacao, "mesenti": mesenti, "oquefiz":oquefiz,"email":login,"token":token, "perfil":"pa"});
 
     final s = response.body;
-    print(s);
+//    print(s);
 
     final map = json.decode(s);
 
@@ -59,7 +87,7 @@ class DiarioService {
     await http.post(url, body: {"id":id, "situacao": situacao, "mesenti": mesenti, "oquefiz":oquefiz,"email":login,"token":token, "perfil":"pa"});
 
     final s = response.body;
-    print(s);
+//    print(s);
 
     final map = json.decode(s);
 
@@ -79,7 +107,27 @@ class DiarioService {
     await http.post(url, body: {"id": id_diario,"email":login,"token":token, "perfil":"pa"});
 
     final s = response.body;
-    print("Visualizar diario >> ${s}");
+//    print("Visualizar diario >> ${s}");
+
+    final map = json.decode(s);
+
+    final p = Diario.fromJson(map);
+
+    return p;
+  }
+
+  static Future<Diario> excluir(String id) async {
+    var url = "http://lpmweb.com.br/projetosentir/diario/excluir";
+
+    final token = await Prefs.getString("token");
+//    print("Tokenaaaaa > $token");
+
+    final login = await Prefs.getString("login");
+    final response =
+    await http.post(url, body: {"id":id,"email":login,"token":token, "perfil":"ps"});
+
+    final s = response.body;
+    print("Excluir diario >> $s");
 
     final map = json.decode(s);
 
